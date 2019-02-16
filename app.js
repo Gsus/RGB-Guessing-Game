@@ -7,9 +7,10 @@ let colors = [
   "rgb(255, 0, 255)",
 ]
 
-let squares = document.querySelectorAll(".square");
-let heading = document.querySelector("h1");
-let pickedColor = colors[3];
+const squares = document.querySelectorAll(".square");
+const heading = document.querySelector("h1");
+const messageDisplay = document.querySelector("#message");
+let pickedColor = pickColor();
 
 heading.textContent = `The Great ${pickedColor} Color Game`;
 
@@ -23,9 +24,29 @@ for (let i = 0; i < squares.length; i++) {
     let clickedColor = this.style.backgroundColor;
     // Compare color to pickedColor
     if (clickedColor === pickedColor) {
-      alert("Correct!");
+      // Show message
+      messageDisplay.textContent = "Correct!";
+      // Change squares color to match correct square's color.
+      changeColors();
+      // Change heading's background color to pickedColor
+      heading.style.backgroundColor = pickedColor;
     } else {
-      alert("Wrong, ma' dude");
+      // Change clicked square's color to body's background color
+      this.style.backgroundColor = "#232323";
+      // Show message
+      messageDisplay.textContent = "Try again";
     }
   })
+}
+
+function changeColors(){
+  // Loop through each square and change its color to pickedColor
+  squares.forEach(function(square){
+    square.style.backgroundColor = pickedColor;
+  });
+}
+
+function pickColor(){
+ let random = Math.floor(Math.random() * colors.length);
+ return colors[random];
 }
