@@ -1,11 +1,4 @@
-let colors = [
-  "rgb(255, 0, 0)",
-  "rgb(255, 255, 0)",
-  "rgb(0, 255, 0)",
-  "rgb(0, 255, 255)",
-  "rgb(0, 0, 255)",
-  "rgb(255, 0, 255)",
-]
+let colors = generateRandomColors(6);
 
 const squares = document.querySelectorAll(".square");
 const heading = document.querySelector("h1");
@@ -22,6 +15,7 @@ for (let i = 0; i < squares.length; i++) {
   squares[i].addEventListener("click", function(){
     // Grab color of clicked square
     let clickedColor = this.style.backgroundColor;
+    console.log(pickedColor, clickedColor);
     // Compare color to pickedColor
     if (clickedColor === pickedColor) {
       // Show message
@@ -49,4 +43,18 @@ function changeColors(){
 function pickColor(){
  let random = Math.floor(Math.random() * colors.length);
  return colors[random];
+}
+
+function generateRandomColors(num){
+  // Create array
+  let arr = [];
+  // Fill array with random numbers
+  for (let i = 0; i < num; i++) {
+    let r = Math.floor(Math.random() * 256);
+    let g = Math.floor(Math.random() * 256);
+    let b = Math.floor(Math.random() * 256);
+    arr.push(`rgb(${r}, ${g}, ${b})`);
+  }
+  // Return array
+  return arr;
 }
