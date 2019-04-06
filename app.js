@@ -1,36 +1,56 @@
 let colors = generateRandomColors(6);
 
 const squares = document.querySelectorAll(".square");
-const heading = document.querySelector("h1");
+const headerMainText = document.querySelector("h1");
 const messageDisplay = document.querySelector("#message");
+const resetButton = document.querySelector("#reset");
 let pickedColor = pickColor();
 
-heading.textContent = `The Great ${pickedColor} Color Game`;
+resetButton.addEventListener("click", function(){
+  // Generate new colors
+  colors = generateRandomColors(6);
+  // Pick a color from that array
+  pickedColor = pickColor();
+  // Change header rgb text to picked color
+  headerMainText.textContent = `The Great ${pickedColor} Color Game`;  
+  // Add colors and click listeners to squares
+  addColorsAndEvent();
+  // Change header background color to default
+  headerMainText.style.backgroundColor = "#232323";
+  // Change button text to default
+  resetButton.textContent = "New Colors";
+});
 
-for (let i = 0; i < squares.length; i++) {
-  // Add initial colors to squares
-  squares[i].style.backgroundColor = colors[i];
+headerMainText.textContent = `The Great ${pickedColor} Color Game`;
 
-  // Add click listeners to squares
-  squares[i].addEventListener("click", function(){
-    // Grab color of clicked square
-    let clickedColor = this.style.backgroundColor;
-    console.log(pickedColor, clickedColor);
-    // Compare color to pickedColor
-    if (clickedColor === pickedColor) {
-      // Show message
-      messageDisplay.textContent = "Correct!";
-      // Change squares color to match correct square's color.
-      changeColors();
-      // Change heading's background color to pickedColor
-      heading.style.backgroundColor = pickedColor;
-    } else {
-      // Change clicked square's color to body's background color
-      this.style.backgroundColor = "#232323";
-      // Show message
-      messageDisplay.textContent = "Try again";
-    }
-  })
+addColorsAndEvent();
+
+function addColorsAndEvent(){
+  for (let i = 0; i < squares.length; i++) {
+    // Add initial colors to squares
+    squares[i].style.backgroundColor = colors[i];
+    // Add click listeners to squares
+    squares[i].addEventListener("click", function(){
+      // Grab color of clicked square
+      let clickedColor = this.style.backgroundColor;
+      // Compare color to pickedColor
+      if (clickedColor === pickedColor) {
+        // Show message
+        messageDisplay.textContent = "Correct!";
+        // Change squares color to match correct square's color.
+        changeColors();
+        // Change headerMainText's background color to pickedColor
+        headerMainText.style.backgroundColor = pickedColor;
+        // Change button text
+        resetButton.textContent = "Play again?";
+      } else {
+        // Change clicked square's color to body's background color
+        this.style.backgroundColor = "#232323";
+        // Show message
+        messageDisplay.textContent = "Try again";
+      }
+    })
+  }   
 }
 
 function changeColors(){
@@ -57,4 +77,15 @@ function generateRandomColors(num){
   }
   // Return array
   return arr;
+}
+
+function isTwoRemainingTest(){
+  remaining = 0;
+
+  for (let i = 0; i < squares.length; i++) {
+    if (squares[i].style.backgroundColor !== "rgb(35, 35, 35)") {
+      remaining++;
+      console.log(remaining);
+    }
+  }
 }
