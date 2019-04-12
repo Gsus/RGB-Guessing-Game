@@ -5,6 +5,7 @@ const headerMainText = document.querySelector("h1");
 const messageDisplay = document.querySelector("#message");
 const resetButton = document.querySelector("#reset");
 let pickedColor = pickColor();
+let isTwoSquares;
 
 resetButton.addEventListener("click", function(){
   // Generate new colors
@@ -48,6 +49,12 @@ function addColorsAndEvent(){
         this.style.backgroundColor = "#232323";
         // Show message
         messageDisplay.textContent = "Try again";
+        // Check
+        isTwoSquares = isTwoRemaining();
+        console.log(isTwoSquares);
+        if (isTwoSquares === true) {
+          console.log("Two squares are remaining");
+        }
       }
     })
   }   
@@ -79,13 +86,28 @@ function generateRandomColors(num){
   return arr;
 }
 
-function isTwoRemainingTest(){
-  remaining = 0;
+function isTwoRemaining(){
+  remainingSquares = 0;
 
   for (let i = 0; i < squares.length; i++) {
     if (squares[i].style.backgroundColor !== "rgb(35, 35, 35)") {
-      remaining++;
-      console.log(remaining);
+      remainingSquares++;
+      console.log(remainingSquares);
     }
   }
+
+  if (remainingSquares === 2) {
+    return true;
+  } else {
+    return false;
+  }
 }
+
+
+/*$("#mydiv").addClass("disabledbutton");
+css
+
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+}*/
