@@ -9,9 +9,14 @@ let gameOver = false;
 let isFinalMove;
 
 resetButton.addEventListener("click", function(){
-  // Game Over variable
+  // Reset variables
   gameOver = !gameOver;
   //
+  squares.forEach(function(square) {
+    if (square.classList.contains("disabled")) {
+      square.classList.toggle("disabled");
+    }
+  });
   // Generate new colors
   colors = generateRandomColors(6);
   // Pick a color from that array
@@ -99,24 +104,17 @@ function generateRandomColors(num){
 
 function finalMove(){
   let remainingSquares = 0;
-  for (let i = 0; i < squares.length; i++) {
-    if (squares[i].style.backgroundColor !== "rgb(35, 35, 35)") {
+  console.log(squares);
+  squares.forEach(function(square){
+    // If the current square is not gone, add 1 to remainingSquare
+    if (square.style.backgroundColor !== "rgb(35, 35, 35)") {
       remainingSquares++;
       console.log(remainingSquares);
     }
-  }
+  });
   if (remainingSquares === 1) {
     return true;
   } else {
     return false;
   }
 }
-
-// function finalMove(){
-//   let wrongSquare;
-//   squares.forEach(function(square){
-//     if (square.style.backgroundColor !== pickedColor){
-      
-//     }
-//   });
-// }
