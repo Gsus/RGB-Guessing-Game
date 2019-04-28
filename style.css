@@ -23,3 +23,8 @@ body {
 h1, span {
   color: white;
 }
+
+.disabled {
+  pointer-events: none;
+  opacity: 0.6;
+}

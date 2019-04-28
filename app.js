@@ -5,15 +5,20 @@ const headerMainText = document.querySelector("h1");
 const messageDisplay = document.querySelector("#message");
 const resetButton = document.querySelector("#reset");
 let pickedColor = pickColor();
-let isTwoSquares;
+let gameOver = false;
+let isFinalMove;
 
 resetButton.addEventListener("click", function(){
+  // Game Over variable
+  gameOver = !gameOver;
+  //
   // Generate new colors
   colors = generateRandomColors(6);
   // Pick a color from that array
   pickedColor = pickColor();
   // Change header rgb text to picked color
-  headerMainText.textContent = `The Great ${pickedColor} Color Game`;  
+  headerMainText.textContent = `The Great ${pickedColor} Color Game`;
+  messageDisplay.textContent = "";
   // Add colors and click listeners to squares
   addColorsAndEvent();
   // Change header background color to default
@@ -50,10 +55,16 @@ function addColorsAndEvent(){
         // Show message
         messageDisplay.textContent = "Try again";
         // Check
-        isTwoSquares = isTwoRemaining();
-        console.log(isTwoSquares);
-        if (isTwoSquares === true) {
-          console.log("Two squares are remaining");
+        isFinalMove = finalMove();
+        if (isFinalMove) {
+          gameOver = true;
+          headerMainText.style.backgroundColor = "red";
+          messageDisplay.textContent = "Game Over!";
+          squares.forEach(function(square) {
+            if (square.style.backgroundColor === pickedColor) {
+              square.classList.toggle("disabled");
+            }
+          });
         }
       }
     })
@@ -86,28 +97,26 @@ function generateRandomColors(num){
   return arr;
 }
 
-function isTwoRemaining(){
-  remainingSquares = 0;
-
+function finalMove(){
+  let remainingSquares = 0;
   for (let i = 0; i < squares.length; i++) {
     if (squares[i].style.backgroundColor !== "rgb(35, 35, 35)") {
       remainingSquares++;
       console.log(remainingSquares);
     }
   }
-
-  if (remainingSquares === 2) {
+  if (remainingSquares === 1) {
     return true;
   } else {
     return false;
   }
 }
 
-
-/*$("#mydiv").addClass("disabledbutton");
-css
-
-.disabledbutton {
-    pointer-events: none;
-    opacity: 0.4;
-}*/
+// function finalMove(){
+//   let wrongSquare;
+//   squares.forEach(function(square){
+//     if (square.style.backgroundColor !== pickedColor){
+      
+//     }
+//   });
+// }
