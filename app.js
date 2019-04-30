@@ -5,13 +5,10 @@ const headerMainText = document.querySelector("h1");
 const messageDisplay = document.querySelector("#message");
 const resetButton = document.querySelector("#reset");
 let pickedColor = pickColor();
-let gameOver = false;
 let isFinalMove;
 
 resetButton.addEventListener("click", function(){
-  // Reset variables
-  gameOver = !gameOver;
-  //
+  // Make disabled squares clickable again
   squares.forEach(function(square) {
     if (square.classList.contains("disabled")) {
       square.classList.toggle("disabled");
@@ -59,14 +56,13 @@ function addColorsAndEvent(){
         this.style.backgroundColor = "#232323";
         // Show message
         messageDisplay.textContent = "Try again";
-        // Check
+        // Check for Game Over
         isFinalMove = finalMove();
         if (isFinalMove) {
-          gameOver = true;
           headerMainText.style.backgroundColor = "red";
           messageDisplay.textContent = "Game Over!";
           squares.forEach(function(square) {
-            if (square.style.backgroundColor === pickedColor) {
+            if (!square.classList.contains("disabled")){
               square.classList.toggle("disabled");
             }
           });
@@ -103,15 +99,15 @@ function generateRandomColors(num){
 }
 
 function finalMove(){
+  // Variable to keep track of remaining squares in the forEach loop
   let remainingSquares = 0;
-  console.log(squares);
   squares.forEach(function(square){
     // If the current square is not gone, add 1 to remainingSquare
     if (square.style.backgroundColor !== "rgb(35, 35, 35)") {
       remainingSquares++;
-      console.log(remainingSquares);
     }
   });
+  // Return depending on if there's only one square reamaining
   if (remainingSquares === 1) {
     return true;
   } else {
