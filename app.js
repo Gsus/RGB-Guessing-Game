@@ -1,11 +1,69 @@
+let numSquares = 6;
 let colors = generateRandomColors(6);
 
 const squares = document.querySelectorAll(".square");
 const headerMainText = document.querySelector("h1");
 const messageDisplay = document.querySelector("#message");
 const resetButton = document.querySelector("#reset");
+const easyBtn = document.querySelector("#easyBtn");
+const hardBtn = document.querySelector("#hardBtn");
 let pickedColor = pickColor();
 let isFinalMove;
+
+// Easy mode
+
+easyBtn.addEventListener("click", function(){
+  easyBtn.classList.add("selected");
+  hardBtn.classList.remove("selected");
+  headerMainText.style.backgroundColor = "#232323";
+  messageDisplay.textContent = "";
+  // Make disabled squares clickable again
+  squares.forEach(function (square) {
+    if (square.classList.contains("disabled")) {
+      square.classList.toggle("disabled");
+    }
+  });
+  numSquares = 3;
+  colors = generateRandomColors(numSquares);
+  pickedColor = pickColor();
+  headerMainText.textContent = `The Great ${pickedColor} Color Game`;
+  for (let i = 0; i < squares.length; i++){
+    if (colors[i]){
+      squares[i].style.backgroundColor = colors[i];
+    } else {
+      squares[i].style.display = "none";
+    }
+  }
+});
+
+// Hard mode
+
+hardBtn.addEventListener("click", function(){
+  hardBtn.classList.add("selected");
+  easyBtn.classList.remove("selected");
+  headerMainText.style.backgroundColor = "#232323";
+  messageDisplay.textContent = "";
+  // Make disabled squares clickable again
+  squares.forEach(function (square) {
+    if (square.classList.contains("disabled")) {
+      square.classList.toggle("disabled");
+    }
+  });
+  numSquares = 6;
+  squares.forEach(function(square){
+    if (square.style.display === "none"){
+      square.style.display = "block";
+    }
+  });
+  colors = generateRandomColors(numSquares);
+  pickedColor = pickColor();
+  headerMainText.textContent = `The Great ${pickedColor} Color Game`;
+  for (let i = 0; i < squares.length; i++) {
+    squares[i].style.backgroundColor = colors[i];
+  }
+});
+
+// ---------------- Rest of the Code ------------
 
 resetButton.addEventListener("click", function(){
   // Make disabled squares clickable again
@@ -15,7 +73,7 @@ resetButton.addEventListener("click", function(){
     }
   });
   // Generate new colors
-  colors = generateRandomColors(6);
+  colors = generateRandomColors(numSquares);
   // Pick a color from that array
   pickedColor = pickColor();
   // Change header rgb text to picked color
