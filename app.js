@@ -12,13 +12,13 @@ let isFinalMove;
 
 // Easy mode
 
-easyBtn.addEventListener("click", function(){
+easyBtn.addEventListener("click", function () {
   easyBtn.classList.add("selected");
   hardBtn.classList.remove("selected");
   numSquares = 3;
   resetGame();
-  for (let i = 0; i < squares.length; i++){
-    if (colors[i]){
+  for (let i = 0; i < squares.length; i++) {
+    if (colors[i]) {
       squares[i].style.backgroundColor = colors[i];
     } else {
       squares[i].style.display = "none";
@@ -28,14 +28,14 @@ easyBtn.addEventListener("click", function(){
 
 // Hard mode
 
-hardBtn.addEventListener("click", function(){
+hardBtn.addEventListener("click", function () {
   hardBtn.classList.add("selected");
   easyBtn.classList.remove("selected");
   numSquares = 6;
   resetGame();
   // Display non-visible squares
-  squares.forEach(function(square){
-    if (square.style.display === "none"){
+  squares.forEach(function (square) {
+    if (square.style.display === "none") {
       square.style.display = "block";
     }
   });
@@ -49,12 +49,12 @@ headerMainText.textContent = `The Great ${pickedColor} Color Game`;
 
 addColorsAndEvent();
 
-function addColorsAndEvent(){
+function addColorsAndEvent() {
   for (let i = 0; i < colors.length; i++) {
     // Add initial colors to squares
     squares[i].style.backgroundColor = colors[i];
     // Add click listeners to squares
-    squares[i].addEventListener("click", function(){
+    squares[i].addEventListener("click", function () {
       // Grab color of clicked square
       let clickedColor = this.style.backgroundColor;
       // Compare color to pickedColor
@@ -75,32 +75,36 @@ function addColorsAndEvent(){
         // Check for Game Over
         isFinalMove = finalMove();
         if (isFinalMove) {
+          // Change header's background color to red
           headerMainText.style.backgroundColor = "red";
+          // Show "Game Over" message
           messageDisplay.textContent = "Game Over!";
-          squares.forEach(function(square) {
-            if (!square.classList.contains("disabled")){
+          // Disable every square
+          squares.forEach(function (square) {
+            if (!square.classList.contains("disabled")) {
               square.classList.toggle("disabled");
             }
           });
         }
       }
-    })
-  }   
+    });
+  }
 }
 
-function changeColors(){
+function changeColors() {
   // Loop through each square and change its color to pickedColor
-  squares.forEach(function(square){
+  squares.forEach(function (square) {
     square.style.backgroundColor = pickedColor;
   });
 }
 
-function pickColor(){
- let random = Math.floor(Math.random() * colors.length);
- return colors[random];
+function pickColor() {
+  // Generate random number between 0 and 5
+  let random = Math.floor(Math.random() * colors.length);
+  return colors[random];
 }
 
-function generateRandomColors(num){
+function generateRandomColors(num) {
   // Create array
   let arr = [];
   // Fill array with random numbers
@@ -114,13 +118,16 @@ function generateRandomColors(num){
   return arr;
 }
 
-function finalMove(){
+function finalMove() {
   // Variable to keep track of remaining squares in the forEach loop
   let remainingSquares = 0;
-  squares.forEach(function(square){
-    // If the current square is not gone, add 1 to remainingSquare
-    if (square.style.backgroundColor !== "rgb(35, 35, 35)") {
-      remainingSquares++;
+  squares.forEach(function (square) {
+    // If the square is showing
+    if (square.style.display !== "none") {
+      // If the current square is not gone, add 1 to remainingSquare
+      if (square.style.backgroundColor !== "rgb(35, 35, 35)") {
+        remainingSquares++;
+      }
     }
   });
   // Return depending on if there's only one square reamaining
@@ -131,7 +138,7 @@ function finalMove(){
   }
 }
 
-function resetGame(){
+function resetGame() {
   // Make disabled squares clickable again
   squares.forEach(function (square) {
     if (square.classList.contains("disabled")) {
