@@ -15,18 +15,8 @@ let isFinalMove;
 easyBtn.addEventListener("click", function(){
   easyBtn.classList.add("selected");
   hardBtn.classList.remove("selected");
-  headerMainText.style.backgroundColor = "#232323";
-  messageDisplay.textContent = "";
-  // Make disabled squares clickable again
-  squares.forEach(function (square) {
-    if (square.classList.contains("disabled")) {
-      square.classList.toggle("disabled");
-    }
-  });
   numSquares = 3;
-  colors = generateRandomColors(numSquares);
-  pickedColor = pickColor();
-  headerMainText.textContent = `The Great ${pickedColor} Color Game`;
+  resetGame();
   for (let i = 0; i < squares.length; i++){
     if (colors[i]){
       squares[i].style.backgroundColor = colors[i];
@@ -41,58 +31,26 @@ easyBtn.addEventListener("click", function(){
 hardBtn.addEventListener("click", function(){
   hardBtn.classList.add("selected");
   easyBtn.classList.remove("selected");
-  headerMainText.style.backgroundColor = "#232323";
-  messageDisplay.textContent = "";
-  // Make disabled squares clickable again
-  squares.forEach(function (square) {
-    if (square.classList.contains("disabled")) {
-      square.classList.toggle("disabled");
-    }
-  });
   numSquares = 6;
+  resetGame();
+  // Display non-visible squares
   squares.forEach(function(square){
     if (square.style.display === "none"){
       square.style.display = "block";
     }
   });
-  colors = generateRandomColors(numSquares);
-  pickedColor = pickColor();
-  headerMainText.textContent = `The Great ${pickedColor} Color Game`;
-  for (let i = 0; i < squares.length; i++) {
-    squares[i].style.backgroundColor = colors[i];
-  }
 });
 
 // ---------------- Rest of the Code ------------
 
-resetButton.addEventListener("click", function(){
-  // Make disabled squares clickable again
-  squares.forEach(function(square) {
-    if (square.classList.contains("disabled")) {
-      square.classList.toggle("disabled");
-    }
-  });
-  // Generate new colors
-  colors = generateRandomColors(numSquares);
-  // Pick a color from that array
-  pickedColor = pickColor();
-  // Change header rgb text to picked color
-  headerMainText.textContent = `The Great ${pickedColor} Color Game`;
-  messageDisplay.textContent = "";
-  // Add colors and click listeners to squares
-  addColorsAndEvent();
-  // Change header background color to default
-  headerMainText.style.backgroundColor = "#232323";
-  // Change button text to default
-  resetButton.textContent = "New Colors";
-});
+resetButton.addEventListener("click", resetGame);
 
 headerMainText.textContent = `The Great ${pickedColor} Color Game`;
 
 addColorsAndEvent();
 
 function addColorsAndEvent(){
-  for (let i = 0; i < squares.length; i++) {
+  for (let i = 0; i < colors.length; i++) {
     // Add initial colors to squares
     squares[i].style.backgroundColor = colors[i];
     // Add click listeners to squares
@@ -171,4 +129,27 @@ function finalMove(){
   } else {
     return false;
   }
+}
+
+function resetGame(){
+  // Make disabled squares clickable again
+  squares.forEach(function (square) {
+    if (square.classList.contains("disabled")) {
+      square.classList.toggle("disabled");
+    }
+  });
+  // Change message when clicking a button to default
+  messageDisplay.textContent = "";
+  // Change header background color to default
+  headerMainText.style.backgroundColor = "#232323";
+  // Change button text to default
+  resetButton.textContent = "New Colors";
+  // Generate new colors
+  colors = generateRandomColors(numSquares);
+  // Pick a color from said colors
+  pickedColor = pickColor();
+  // Change header rgb text to picked color
+  headerMainText.textContent = `The Great ${pickedColor} Color Game`;
+  // Add colors and click listeners to squares
+  addColorsAndEvent();
 }
