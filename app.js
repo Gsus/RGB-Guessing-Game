@@ -7,6 +7,7 @@ const messageDisplay = document.querySelector("#message");
 const resetButton = document.querySelector("#reset");
 const easyBtn = document.querySelector("#easyBtn");
 const hardBtn = document.querySelector("#hardBtn");
+const designerBtn = document.querySelector("#designerBtn");
 let pickedColor = pickColor();
 let isFinalMove;
 
@@ -39,6 +40,16 @@ hardBtn.addEventListener("click", function () {
       square.style.display = "block";
     }
   });
+});
+
+// Designer mode
+
+designerBtn.addEventListener("click", function () {
+  designerBtn.classList.add("selected");
+  hardBtn.classList.remove("selected");
+  easyBtn.classList.remove("selected");
+  numSquares = 6;
+  resetGame();
 });
 
 // ---------------- Rest of the Code ------------
@@ -79,6 +90,8 @@ function addColorsAndEvent() {
           headerMainText.style.backgroundColor = "red";
           // Show "Game Over" message
           messageDisplay.textContent = "Game Over!";
+          // Change button text
+          resetButton.textContent = "Play again?";
           // Disable every square
           squares.forEach(function (square) {
             if (!square.classList.contains("disabled")) {
@@ -119,7 +132,7 @@ function generateRandomColors(num) {
 }
 
 function finalMove() {
-  // Variable to keep track of remaining squares in the forEach loop
+  // Keep track of remaining squares in the forEach loop
   let remainingSquares = 0;
   squares.forEach(function (square) {
     // If the square is showing
