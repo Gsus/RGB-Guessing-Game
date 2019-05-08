@@ -18,6 +18,7 @@ easyBtn.addEventListener("click", function () {
   hardBtn.classList.remove("selected");
   numSquares = 3;
   resetGame();
+  // If there's a next color, add it to a square; otherwise don't show the square in the first place.
   for (let i = 0; i < squares.length; i++) {
     if (colors[i]) {
       squares[i].style.backgroundColor = colors[i];
@@ -33,13 +34,8 @@ hardBtn.addEventListener("click", function () {
   hardBtn.classList.add("selected");
   easyBtn.classList.remove("selected");
   numSquares = 6;
+  displaySquares();
   resetGame();
-  // Display non-visible squares
-  squares.forEach(function (square) {
-    if (square.style.display === "none") {
-      square.style.display = "block";
-    }
-  });
 });
 
 // Designer mode
@@ -49,6 +45,17 @@ designerBtn.addEventListener("click", function () {
   hardBtn.classList.remove("selected");
   easyBtn.classList.remove("selected");
   numSquares = 6;
+  // // Generate and pick a color
+  // generateAndPickColor();
+  // // Get percentage from that color six times from a certain range
+  // colors.forEach(function(color){
+  //   // parseFloat(pickedColor.split("(")[1].split(")")[0].split(",")[0]);
+  // });
+  // Math.floor(150 * (Math.random() * 0.3));
+
+  // If 0, substract; if 1, add variations
+  // Assign those variations as new colors so that they can be added later
+  displaySquares();
   resetGame();
 });
 
@@ -93,11 +100,7 @@ function addColorsAndEvent() {
           // Change button text
           resetButton.textContent = "Play again?";
           // Disable every square
-          squares.forEach(function (square) {
-            if (!square.classList.contains("disabled")) {
-              square.classList.toggle("disabled");
-            }
-          });
+          disableSquares();
         }
       }
     });
@@ -152,24 +155,52 @@ function finalMove() {
 }
 
 function resetGame() {
-  // Make disabled squares clickable again
-  squares.forEach(function (square) {
-    if (square.classList.contains("disabled")) {
-      square.classList.toggle("disabled");
-    }
-  });
+  // Make disabled squares great again
+  enableSquares();
   // Change message when clicking a button to default
   messageDisplay.textContent = "";
   // Change header background color to default
   headerMainText.style.backgroundColor = "#232323";
   // Change button text to default
   resetButton.textContent = "New Colors";
-  // Generate new colors
-  colors = generateRandomColors(numSquares);
-  // Pick a color from said colors
-  pickedColor = pickColor();
+  // Generate and pick a color from said colors
+  generateAndPickColor();
   // Change header rgb text to picked color
   headerMainText.textContent = `The Great ${pickedColor} Color Game`;
   // Add colors and click listeners to squares
   addColorsAndEvent();
+}
+
+function displaySquares(){
+  // Display non-visible squares
+  squares.forEach(function (square) {
+    if (square.style.display === "none") {
+      square.style.display = "block";
+    }
+  });
+}
+
+function disableSquares(){
+  // Disable every square
+  squares.forEach(function (square) {
+    if (!square.classList.contains("disabled")) {
+      square.classList.toggle("disabled");
+    }
+  });
+}
+
+function enableSquares(){
+  // Make disabled squares great again
+  squares.forEach(function (square) {
+    if (square.classList.contains("disabled")) {
+      square.classList.toggle("disabled");
+    }
+  });
+}
+
+function generateAndPickColor(){
+  // Generate new colors
+  colors = generateRandomColors(numSquares);
+  // Pick a color from said colors
+  pickedColor = pickColor();
 }
