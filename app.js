@@ -11,11 +11,14 @@ const designerBtn = document.querySelector("#designerBtn");
 let pickedColor = pickColor();
 let isFinalMove;
 
+// -------------- Difficulty modes ---------------
+
 // Easy mode
 
 easyBtn.addEventListener("click", function () {
   easyBtn.classList.add("selected");
   hardBtn.classList.remove("selected");
+  designerBtn.classList.remove("selected");
   numSquares = 3;
   resetGame();
   // If there's a next color, add it to a square; otherwise don't show the square in the first place.
@@ -33,6 +36,7 @@ easyBtn.addEventListener("click", function () {
 hardBtn.addEventListener("click", function () {
   hardBtn.classList.add("selected");
   easyBtn.classList.remove("selected");
+  designerBtn.classList.remove("selected");
   numSquares = 6;
   displaySquares();
   resetGame();
@@ -45,21 +49,14 @@ designerBtn.addEventListener("click", function () {
   hardBtn.classList.remove("selected");
   easyBtn.classList.remove("selected");
   numSquares = 6;
-  // // Generate and pick a color
-  // generateAndPickColor();
-  // // Get percentage from that color six times from a certain range
-  // colors.forEach(function(color){
-  //   // parseFloat(pickedColor.split("(")[1].split(")")[0].split(",")[0]);
-  // });
-  // Math.floor(150 * (Math.random() * 0.3));
-
-  // If 0, substract; if 1, add variations
-  // Assign those variations as new colors so that they can be added later
   displaySquares();
+  // Self-explanatory, lol
   resetGame();
+  // Get each rgb value from the picked color
+  generateVariations();
 });
 
-// ---------------- Rest of the Code ------------
+// ---------------- Main stuff and functions ------------
 
 resetButton.addEventListener("click", resetGame);
 
@@ -67,6 +64,7 @@ headerMainText.textContent = `The Great ${pickedColor} Color Game`;
 
 addColorsAndEvent();
 
+// Main function; pretty much the core of the game
 function addColorsAndEvent() {
   for (let i = 0; i < colors.length; i++) {
     // Add initial colors to squares
@@ -134,6 +132,13 @@ function generateRandomColors(num) {
   return arr;
 }
 
+function generateAndPickColor() {
+  // Generate new colors
+  colors = generateRandomColors(numSquares);
+  // Pick a color from said colors
+  pickedColor = pickColor();
+}
+
 function finalMove() {
   // Keep track of remaining squares in the forEach loop
   let remainingSquares = 0;
@@ -146,7 +151,7 @@ function finalMove() {
       }
     }
   });
-  // Return depending on if there's only one square reamaining
+  // Return depending on if there's only one square remaining
   if (remainingSquares === 1) {
     return true;
   } else {
@@ -155,23 +160,41 @@ function finalMove() {
 }
 
 function resetGame() {
-  // Make disabled squares great again
-  enableSquares();
-  // Change message when clicking a button to default
-  messageDisplay.textContent = "";
-  // Change header background color to default
-  headerMainText.style.backgroundColor = "#232323";
-  // Change button text to default
-  resetButton.textContent = "New Colors";
-  // Generate and pick a color from said colors
-  generateAndPickColor();
-  // Change header rgb text to picked color
-  headerMainText.textContent = `The Great ${pickedColor} Color Game`;
-  // Add colors and click listeners to squares
-  addColorsAndEvent();
+  // If on easy or hard mode
+  if (!designerBtn.classList.contains("selected")) {
+    // Make disabled squares great again
+    enableSquares();
+    // Change message when clicking a button to default
+    messageDisplay.textContent = "";
+    // Change header background color to default
+    headerMainText.style.backgroundColor = "#232323";
+    // Change button text to default
+    resetButton.textContent = "New Colors";
+    // Generate and pick a color from said colors
+    generateAndPickColor();
+    // Change header rgb text to picked color
+    headerMainText.textContent = `The Great ${pickedColor} Color Game`;
+    // Add colors and click listeners to squares
+    addColorsAndEvent();
+  } else { // If on designer mode
+    // Make disabled squares great again
+    enableSquares();
+    // Change message when clicking a button to default
+    messageDisplay.textContent = "";
+    // Change header background color to default
+    headerMainText.style.backgroundColor = "#232323";
+    // Change button text to default
+    resetButton.textContent = "New Colors";
+    // Generate and pick a color
+    generateAndPickColor();
+    // Generate variations
+    generateVariations();
+    // Change header rgb text to picked color
+    headerMainText.textContent = `The Great ${pickedColor} Color Game`;
+  }
 }
 
-function displaySquares(){
+function displaySquares() {
   // Display non-visible squares
   squares.forEach(function (square) {
     if (square.style.display === "none") {
@@ -180,7 +203,7 @@ function displaySquares(){
   });
 }
 
-function disableSquares(){
+function disableSquares() {
   // Disable every square
   squares.forEach(function (square) {
     if (!square.classList.contains("disabled")) {
@@ -189,7 +212,7 @@ function disableSquares(){
   });
 }
 
-function enableSquares(){
+function enableSquares() {
   // Make disabled squares great again
   squares.forEach(function (square) {
     if (square.classList.contains("disabled")) {
@@ -198,9 +221,36 @@ function enableSquares(){
   });
 }
 
-function generateAndPickColor(){
-  // Generate new colors
-  colors = generateRandomColors(numSquares);
-  // Pick a color from said colors
-  pickedColor = pickColor();
+function generateVariations() {
+  // Get each rgb value from the picked color
+  let pickedColorValues = pickedColor;
+  pickedColorValues = pickedColorValues.split("(");
+  pickedColorValues = pickedColorValues[1];
+  pickedColorValues = pickedColorValues.split(")");
+  pickedColorValues = pickedColorValues[0];
+  pickedColorValues = pickedColorValues.split(",");
+  // Generate color variations
+  for (let i = 0; i < colors.length; i++) {
+    if (colors[i] !== pickedColor) {
+      // Get up to 1/2 of each rgb value
+      let r = Math.floor(parseInt(pickedColorValues[0]) * (Math.random() * 0.5));
+      let g = Math.floor(parseInt(pickedColorValues[1]) * (Math.random() * 0.5));
+      let b = Math.floor(parseInt(pickedColorValues[2]) * (Math.random() * 0.5));
+      // If 0, substract; if 1, add variations
+      let flipCoin = Math.floor(Math.random() * 2);
+      if (flipCoin === 1) {
+        r = parseInt(pickedColorValues[0]) + r;
+        g = parseInt(pickedColorValues[1]) + g;
+        b = parseInt(pickedColorValues[2]) + b;
+      } else {
+        r = parseInt(pickedColorValues[0]) - r;
+        g = parseInt(pickedColorValues[1]) - g;
+        b = parseInt(pickedColorValues[2]) - b;
+      }
+      // Assign those variations as new colors so that they can be added later
+      colors[i] = `rgb(${r}, ${g}, ${b})`;
+    }
+  };
+  // Add colors and click listeners to squares
+  addColorsAndEvent();
 }
