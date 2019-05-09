@@ -167,7 +167,7 @@ function resetGame() {
     // Change message when clicking a button to default
     messageDisplay.textContent = "";
     // Change header background color to default
-    headerMainText.style.backgroundColor = "#232323";
+    headerMainText.style.backgroundColor = "steelblue";
     // Change button text to default
     resetButton.textContent = "New Colors";
     // Generate and pick a color from said colors
@@ -182,7 +182,7 @@ function resetGame() {
     // Change message when clicking a button to default
     messageDisplay.textContent = "";
     // Change header background color to default
-    headerMainText.style.backgroundColor = "#232323";
+    headerMainText.style.backgroundColor = "steelblue";
     // Change button text to default
     resetButton.textContent = "New Colors";
     // Generate and pick a color
@@ -236,17 +236,33 @@ function generateVariations() {
       let r = Math.floor(parseInt(pickedColorValues[0]) * (Math.random() * 0.5));
       let g = Math.floor(parseInt(pickedColorValues[1]) * (Math.random() * 0.5));
       let b = Math.floor(parseInt(pickedColorValues[2]) * (Math.random() * 0.5));
+      let max = 255;
       // If 0, substract; if 1, add variations
       let flipCoin = Math.floor(Math.random() * 2);
       if (flipCoin === 1) {
+        // let value = pickedColorValues[0];
+        // let result = parseInt(value) + r;
+        // let difference = result - max;
+        // if (result >= max) {
+        //   result = max - difference;
+        // }
         r = parseInt(pickedColorValues[0]) + r;
         g = parseInt(pickedColorValues[1]) + g;
         b = parseInt(pickedColorValues[2]) + b;
+        console.log(i, "flipCoin add:" , r, g, b);
       } else {
         r = parseInt(pickedColorValues[0]) - r;
         g = parseInt(pickedColorValues[1]) - g;
         b = parseInt(pickedColorValues[2]) - b;
+        console.log(i, "flipCoin substract:" , r, g, b);
       }
+      // value = 12;
+      // otherValue = 15;
+      // result = value + otherValue;
+      // difference = result - max;
+      // if (result >= max) {
+      //   result = max - difference;
+      // }
       // Assign those variations as new colors so that they can be added later
       colors[i] = `rgb(${r}, ${g}, ${b})`;
     }
@@ -254,3 +270,5 @@ function generateVariations() {
   // Add colors and click listeners to squares
   addColorsAndEvent();
 }
+
+function getDifference()
