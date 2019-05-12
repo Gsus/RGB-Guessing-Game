@@ -1,71 +1,45 @@
 let numSquares = 6;
 let colors = generateRandomColors(6);
+let pickedColor = pickColor();
 
 const squares = document.querySelectorAll(".square");
-const headerMainText = document.querySelector("h1");
+const mainDisplay = document.querySelector("h1");
 const messageDisplay = document.querySelector("#message");
 const resetButton = document.querySelector("#reset");
-const easyBtn = document.querySelector("#easyBtn");
-const hardBtn = document.querySelector("#hardBtn");
-const designerBtn = document.querySelector("#designerBtn");
-let pickedColor = pickColor();
-let isFinalMove;
+const modeButtons = document.querySelectorAll(".mode");
 
-// -------------- Difficulty modes ---------------
+// init();
 
-// Easy mode
-
-easyBtn.addEventListener("click", function () {
-  easyBtn.classList.add("selected");
-  hardBtn.classList.remove("selected");
-  designerBtn.classList.remove("selected");
-  numSquares = 3;
-  resetGame();
-  // If there's a next color, add it to a square; otherwise don't show the square in the first place.
-  for (let i = 0; i < squares.length; i++) {
-    if (colors[i]) {
-      squares[i].style.backgroundColor = colors[i];
-    } else {
-      squares[i].style.display = "none";
-    }
+// function init(){
+  for (let i = 0; i < modeButtons.length; i++) {
+    modeButtons[i].addEventListener("click", function () {
+      modeButtons.forEach(function (modeButton) {
+        modeButton.classList.remove("selected");
+      });
+      this.classList.add("selected");
+      if (this === modeButtons[0]) { // If Easy mode
+        numSquares = 3;
+        resetGame();
+        hideSquares();
+      } else { // If Hard or Designer mode
+        numSquares = 6;
+        displaySquares();
+        resetGame();
+      }
+    });
   }
-});
+// }
 
-// Hard mode
-
-hardBtn.addEventListener("click", function () {
-  hardBtn.classList.add("selected");
-  easyBtn.classList.remove("selected");
-  designerBtn.classList.remove("selected");
-  numSquares = 6;
-  displaySquares();
-  resetGame();
-});
-
-// Designer mode
-
-designerBtn.addEventListener("click", function () {
-  designerBtn.classList.add("selected");
-  hardBtn.classList.remove("selected");
-  easyBtn.classList.remove("selected");
-  numSquares = 6;
-  displaySquares();
-  // Self-explanatory, lol
-  resetGame();
-  // Get each rgb value from the picked color
-  generateVariations();
-});
 
 // ---------------- Main stuff and functions ------------
 
 resetButton.addEventListener("click", resetGame);
 
-headerMainText.textContent = `The Great ${pickedColor} Color Game`;
+mainDisplay.innerHTML = `The Great <br><span style = "font-size:200%;">${pickedColor}</span><br> Guessing Game`;
 
 addColorsAndEvent();
 
-// Main function; pretty much the core of the game
-function addColorsAndEvent() {
+function addColorsAndEvent() { // Main function; pretty much the core of the game
   for (let i = 0; i < colors.length; i++) {
     // Add initial colors to squares
     squares[i].style.backgroundColor = colors[i];
@@ -79,20 +53,20 @@ function addColorsAndEvent() {
         messageDisplay.textContent = "Correct!";
         // Change squares color to match correct square's color.
         changeColors();
-        // Change headerMainText's background color to pickedColor
-        headerMainText.style.backgroundColor = pickedColor;
+        // Change header's background color to pickedColor
+        mainDisplay.style.backgroundColor = pickedColor;
         // Change button text
         resetButton.textContent = "Play again?";
       } else {
         // Change clicked square's color to body's background color
         this.style.backgroundColor = "#232323";
         // Show message
-        messageDisplay.textContent = "Try again";
+        messageDisplay.textContent = "Try Again";
         // Check for Game Over
-        isFinalMove = finalMove();
+        let isFinalMove = finalMove();
         if (isFinalMove) {
           // Change header's background color to red
-          headerMainText.style.backgroundColor = "red";
+          mainDisplay.style.backgroundColor = "rgb(255, 66, 66)";
           // Show "Game Over" message
           messageDisplay.textContent = "Game Over!";
           // Change button text
@@ -105,17 +79,108 @@ function addColorsAndEvent() {
   }
 }
 
-function changeColors() {
-  // Loop through each square and change its color to pickedColor
+function finalMove() {
+  // Keep track of remaining squares in the forEach loop
+  let remainingSquares = 0;
   squares.forEach(function (square) {
-    square.style.backgroundColor = pickedColor;
+    // If the square is showing
+    if (square.style.display !== "none") {
+      // If the current square is not gone, add 1 to remainingSquare
+      if (square.style.backgroundColor !== "rgb(35, 35, 35)") {
+        remainingSquares++;
+      }
+    }
   });
+  // Return depending on if there's only one square remaining
+  return remainingSquares === 1;
 }
 
-function pickColor() {
-  // Generate random number between 0 and 5
-  let random = Math.floor(Math.random() * colors.length);
-  return colors[random];
+function resetGame() {
+  // If on easy or hard mode
+  if (!modeButtons[2].classList.contains("selected")) {
+    // Make disabled squares great again
+    enableSquares();
+    // Change message when clicking a button to default
+    messageDisplay.textContent = "";
+    // Change header background color to default
+    mainDisplay.style.backgroundColor = "steelblue";
+    // Change button text to default
+    resetButton.textContent = "New Colors";
+    // Generate and pick a color from said colors
+    generateAndPickColor();
+    // Change header rgb text to picked color
+    mainDisplay.innerHTML = `The Great <br><span style = "font-size:200%;">${pickedColor}</span><br> Guessing Game`;
+    // Add colors and click listeners to squares
+    addColorsAndEvent();
+  } else { // If on designer mode
+    // Make disabled squares great again
+    enableSquares();
+    // Change message when clicking a button to default
+    messageDisplay.textContent = "";
+    // Change header background color to default
+    mainDisplay.style.backgroundColor = "steelblue";
+    // Change button text to default
+    resetButton.textContent = "New Colors";
+    // Generate and pick a color
+    generateAndPickColor();
+    // Generate variations
+    generateVariations();
+    // Change header rgb text to picked color
+    mainDisplay.innerHTML = `The Great <br><span style = "font-size:200%;">${pickedColor}</span><br> Guessing Game`;
+  }
+}
+
+function generateVariations() {
+  // Get each rgb value from the picked color
+  let pickedColorValues = pickedColor;
+  pickedColorValues = pickedColorValues.split("(");
+  pickedColorValues = pickedColorValues[1];
+  pickedColorValues = pickedColorValues.split(")");
+  pickedColorValues = pickedColorValues[0];
+  pickedColorValues = pickedColorValues.split(",");
+  // Generate color variations
+  for (let i = 0; i < colors.length; i++) {
+    if (colors[i] !== pickedColor) {
+      // Easier-reading variables
+      let pickedR = pickedColorValues[0];
+      let pickedG = pickedColorValues[1];
+      let pickedB = pickedColorValues[2];
+      // Get up to 35%~ of each rgb value
+      let r = Math.floor(parseInt(pickedR) * (Math.random() * 0.35 + 0.01));
+      let g = Math.floor(parseInt(pickedG) * (Math.random() * 0.35 + 0.01));
+      let b = Math.floor(parseInt(pickedB) * (Math.random() * 0.35 + 0.01));
+      // If 1, add variations; if 0, substract 'em
+      let flipCoin = Math.floor(Math.random() * 2);
+      if (flipCoin === 1) {
+        // Add variation and substract remainings
+        r = parseInt(pickedR) + r;
+        r = getRemaining(r);
+        g = parseInt(pickedG) + g;
+        g = getRemaining(g);
+        b = parseInt(pickedB) + b;
+        b = getRemaining(b);
+      } else {
+        r = parseInt(pickedR) - r;
+        g = parseInt(pickedG) - g;
+        b = parseInt(pickedB) - b;
+      }
+      // Assign those variations as new colors so that they can be added later
+      colors[i] = `rgb(${r}, ${g}, ${b})`;
+    }
+  };
+  // Add colors and click listeners to squares
+  addColorsAndEvent();
+}
+
+function getRemaining(result) {
+  const max = 255;
+  if (result > max) {
+    let difference = result - max;
+    result = max - difference;
+    return result;
+  } else {
+    return result;
+  }
 }
 
 function generateRandomColors(num) {
@@ -132,6 +197,19 @@ function generateRandomColors(num) {
   return arr;
 }
 
+function pickColor() {
+  // Generate random number between 0 and 5
+  let random = Math.floor(Math.random() * colors.length);
+  return colors[random];
+}
+
+function changeColors() {
+  // Loop through each square and change its color to pickedColor
+  squares.forEach(function (square) {
+    square.style.backgroundColor = pickedColor;
+  });
+}
+
 function generateAndPickColor() {
   // Generate new colors
   colors = generateRandomColors(numSquares);
@@ -139,58 +217,12 @@ function generateAndPickColor() {
   pickedColor = pickColor();
 }
 
-function finalMove() {
-  // Keep track of remaining squares in the forEach loop
-  let remainingSquares = 0;
-  squares.forEach(function (square) {
-    // If the square is showing
-    if (square.style.display !== "none") {
-      // If the current square is not gone, add 1 to remainingSquare
-      if (square.style.backgroundColor !== "rgb(35, 35, 35)") {
-        remainingSquares++;
-      }
+function hideSquares(){
+  // If there's not a next color, hide the square
+  for (let i = 0; i < squares.length; i++) {
+    if (!colors[i]) {
+      squares[i].style.display = "none";
     }
-  });
-  // Return depending on if there's only one square remaining
-  if (remainingSquares === 1) {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function resetGame() {
-  // If on easy or hard mode
-  if (!designerBtn.classList.contains("selected")) {
-    // Make disabled squares great again
-    enableSquares();
-    // Change message when clicking a button to default
-    messageDisplay.textContent = "";
-    // Change header background color to default
-    headerMainText.style.backgroundColor = "steelblue";
-    // Change button text to default
-    resetButton.textContent = "New Colors";
-    // Generate and pick a color from said colors
-    generateAndPickColor();
-    // Change header rgb text to picked color
-    headerMainText.textContent = `The Great ${pickedColor} Color Game`;
-    // Add colors and click listeners to squares
-    addColorsAndEvent();
-  } else { // If on designer mode
-    // Make disabled squares great again
-    enableSquares();
-    // Change message when clicking a button to default
-    messageDisplay.textContent = "";
-    // Change header background color to default
-    headerMainText.style.backgroundColor = "steelblue";
-    // Change button text to default
-    resetButton.textContent = "New Colors";
-    // Generate and pick a color
-    generateAndPickColor();
-    // Generate variations
-    generateVariations();
-    // Change header rgb text to picked color
-    headerMainText.textContent = `The Great ${pickedColor} Color Game`;
   }
 }
 
@@ -220,55 +252,3 @@ function enableSquares() {
     }
   });
 }
-
-function generateVariations() {
-  // Get each rgb value from the picked color
-  let pickedColorValues = pickedColor;
-  pickedColorValues = pickedColorValues.split("(");
-  pickedColorValues = pickedColorValues[1];
-  pickedColorValues = pickedColorValues.split(")");
-  pickedColorValues = pickedColorValues[0];
-  pickedColorValues = pickedColorValues.split(",");
-  // Generate color variations
-  for (let i = 0; i < colors.length; i++) {
-    if (colors[i] !== pickedColor) {
-      // Get up to 1/2 of each rgb value
-      let r = Math.floor(parseInt(pickedColorValues[0]) * (Math.random() * 0.5));
-      let g = Math.floor(parseInt(pickedColorValues[1]) * (Math.random() * 0.5));
-      let b = Math.floor(parseInt(pickedColorValues[2]) * (Math.random() * 0.5));
-      let max = 255;
-      // If 0, substract; if 1, add variations
-      let flipCoin = Math.floor(Math.random() * 2);
-      if (flipCoin === 1) {
-        // let value = pickedColorValues[0];
-        // let result = parseInt(value) + r;
-        // let difference = result - max;
-        // if (result >= max) {
-        //   result = max - difference;
-        // }
-        r = parseInt(pickedColorValues[0]) + r;
-        g = parseInt(pickedColorValues[1]) + g;
-        b = parseInt(pickedColorValues[2]) + b;
-        console.log(i, "flipCoin add:" , r, g, b);
-      } else {
-        r = parseInt(pickedColorValues[0]) - r;
-        g = parseInt(pickedColorValues[1]) - g;
-        b = parseInt(pickedColorValues[2]) - b;
-        console.log(i, "flipCoin substract:" , r, g, b);
-      }
-      // value = 12;
-      // otherValue = 15;
-      // result = value + otherValue;
-      // difference = result - max;
-      // if (result >= max) {
-      //   result = max - difference;
-      // }
-      // Assign those variations as new colors so that they can be added later
-      colors[i] = `rgb(${r}, ${g}, ${b})`;
-    }
-  };
-  // Add colors and click listeners to squares
-  addColorsAndEvent();
-}
-
-function getDifference()
