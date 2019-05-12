@@ -1,6 +1,6 @@
 let numSquares = 6;
-let colors = generateRandomColors(6);
-let pickedColor = pickColor();
+let colors;
+let pickedColor;
 
 const squares = document.querySelectorAll(".square");
 const mainDisplay = document.querySelector("h1");
@@ -8,9 +8,15 @@ const messageDisplay = document.querySelector("#message");
 const resetButton = document.querySelector("#reset");
 const modeButtons = document.querySelectorAll(".mode");
 
-// init();
+init();
 
-// function init(){
+function init(){
+  setUpModeButtons();
+  resetGame();
+}
+
+function setUpModeButtons() {
+  // Add click listeners to buttons
   for (let i = 0; i < modeButtons.length; i++) {
     modeButtons[i].addEventListener("click", function () {
       modeButtons.forEach(function (modeButton) {
@@ -28,21 +34,10 @@ const modeButtons = document.querySelectorAll(".mode");
       }
     });
   }
-// }
+}
 
-
-// ---------------- Main stuff and functions ------------
-
-resetButton.addEventListener("click", resetGame);
-
-mainDisplay.innerHTML = `The Great <br><span style = "font-size:200%;">${pickedColor}</span><br> Guessing Game`;
-
-addColorsAndEvent();
-
-function addColorsAndEvent() { // Main function; pretty much the core of the game
+function setUpSquares() { // Main function; pretty much the core of the game
   for (let i = 0; i < colors.length; i++) {
-    // Add initial colors to squares
-    squares[i].style.backgroundColor = colors[i];
     // Add click listeners to squares
     squares[i].addEventListener("click", function () {
       // Grab color of clicked square
@@ -110,8 +105,10 @@ function resetGame() {
     generateAndPickColor();
     // Change header rgb text to picked color
     mainDisplay.innerHTML = `The Great <br><span style = "font-size:200%;">${pickedColor}</span><br> Guessing Game`;
+    // Add initial colors to squares
+    addColors();
     // Add colors and click listeners to squares
-    addColorsAndEvent();
+    setUpSquares();
   } else { // If on designer mode
     // Make disabled squares great again
     enableSquares();
@@ -129,6 +126,8 @@ function resetGame() {
     mainDisplay.innerHTML = `The Great <br><span style = "font-size:200%;">${pickedColor}</span><br> Guessing Game`;
   }
 }
+
+resetButton.addEventListener("click", resetGame);
 
 function generateVariations() {
   // Get each rgb value from the picked color
@@ -168,8 +167,10 @@ function generateVariations() {
       colors[i] = `rgb(${r}, ${g}, ${b})`;
     }
   };
+  // Add initial colors to squares
+  addColors();
   // Add colors and click listeners to squares
-  addColorsAndEvent();
+  setUpSquares();
 }
 
 function getRemaining(result) {
@@ -215,6 +216,13 @@ function generateAndPickColor() {
   colors = generateRandomColors(numSquares);
   // Pick a color from said colors
   pickedColor = pickColor();
+}
+
+function addColors() {
+  // Add initial colors to squares
+  for (let i = 0; i < colors.length; i++) {
+    squares[i].style.backgroundColor = colors[i];
+  }
 }
 
 function hideSquares(){
